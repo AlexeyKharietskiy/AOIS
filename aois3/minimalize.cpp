@@ -201,29 +201,7 @@ inline string make_min_form(Stack** begin, LogicExpr a, bool flag)
 		return make_pcnf_form(*begin, a);
 
 }
-inline void calculation_method(LogicExpr a) {
-	bool operation = true;
-	Stack* begin = NULL;
-	begin = change_form(a, true);
-	while (operation == true)
-	{
-		operation = false;
-		begin = glue_stage(begin, a, operation);
-	}
-	operation = true;
-	cout << "Calculation method:\n";
-	cout << "DNF before verification:" << make_pcnf_form(begin, a) << endl;
-	cout << "DNF after verification:" << make_min_form(&begin, a, true) << endl;
-	begin = change_form( a, false);
-	while (operation == true)
-	{
-		operation = false;
-		begin = glue_stage(begin, a, operation);
-	}
-	cout << "CNF before verification:" << make_pdnf_form(begin, a) << endl;
-	cout << "CNF after verification:" << make_min_form(&begin, a, false) << endl;
-	del_all(&begin);
-}
+
 inline void show_calc_table(vector<vector<string>> table, string expr, string not_vertix_form, bool type) {
 	if (type)
 		cout << "DNF before verification:";
@@ -245,12 +223,7 @@ inline void show_calc_table(vector<vector<string>> table, string expr, string no
 		cout << "CNF after verification:";
 	cout << expr << endl;
 }
-inline string make_table_form(LogicExpr a, Stack* begin, bool type) {
-	vector<vector<string>> table;
-	table.push_back({ " " });
-	string expr;
-	bool flag;
-	string not_verif_form;
+inline vector<vector<string>> create_table_form(LogicExpr a, Stack* begin, vector<vector<string>> table, string &not_verif_form, string expr, bool type) {
 	if (type == true) {
 		not_verif_form = make_pdnf_form(begin, a);
 		for (int j = 0; j < a.get_pdnf().size(); j++)
@@ -294,9 +267,18 @@ inline string make_table_form(LogicExpr a, Stack* begin, bool type) {
 		}
 
 	}
+	return table;
+}
+inline string make_table_form(LogicExpr a, Stack* begin, bool type) {
+	vector<vector<string>> table;
+	table.push_back({ " " });
+	string expr;
+	bool flag;
+	string not_verif_form;
+	vector<string> vars;
+	table = create_table_form(a, begin, table, not_verif_form, expr, type);
 	for (int i = 1; i < table.size(); i++)
 	{
-		vector<string> vars;
 		vars.push_back("");
 		for (int k = 1; k < table[i][0].size(); k++)
 		{
@@ -354,11 +336,35 @@ inline string make_table_form(LogicExpr a, Stack* begin, bool type) {
 			else
 				expr += '&';
 		}
-	};
+	}
 	if(!expr.empty())
 	expr.pop_back();
 	show_calc_table(table, expr, not_verif_form, type);
 	return expr;
+}
+
+inline void calculation_method(LogicExpr a) {
+	bool operation = true;
+	Stack* begin = NULL;
+	begin = change_form(a, true);
+	while (operation == true)
+	{
+		operation = false;
+		begin = glue_stage(begin, a, operation);
+	}
+	operation = true;
+	cout << "Calculation method:\n";
+	cout << "DNF before verification:" << make_pcnf_form(begin, a) << endl;
+	cout << "DNF after verification:" << make_min_form(&begin, a, true) << endl;
+	begin = change_form(a, false);
+	while (operation == true)
+	{
+		operation = false;
+		begin = glue_stage(begin, a, operation);
+	}
+	cout << "CNF before verification:" << make_pdnf_form(begin, a) << endl;
+	cout << "CNF after verification:" << make_min_form(&begin, a, false) << endl;
+	del_all(&begin);
 }
 inline void calculation_table_method(LogicExpr a) {
 	bool operation = true;
