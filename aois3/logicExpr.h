@@ -16,11 +16,7 @@ public:
 	LogicExpr() {
 
 	}
-	void set_expr(string str) {
-		this->expr = str;
-		make_result();
-		make_index_form();
-	}
+	void set_expr(string str);
 	int get_index_form();
 	string get_pcnf();
 	string get_pdnf();
