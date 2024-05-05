@@ -35,6 +35,11 @@ string LogicExpr::get_vars() {
 	return this->vars;
 
 }
+inline void LogicExpr::set_expr(string str) {
+	this->expr = str;
+	make_result();
+	make_index_form();
+}
 
 void LogicExpr::show_table() {
 	for (int i = 0; i < truthTable[0].size(); i++)
@@ -75,7 +80,6 @@ void LogicExpr::show_carno_table() {
 	cout << "CNF after verification:" << make_min_form(&begin, *this, true) << endl;
 	del_all(&begin);
 }
-
 void LogicExpr::show_expr() {
 	cout << expr << endl;
 }
@@ -105,6 +109,7 @@ void LogicExpr::show_index_form() {
 
 	cout << "Index form: " << index_form << endl;
 }
+
 char LogicExpr::disunction(char a, char b)
 {
 	return (a == '1' || b == '1') ? '1' : '0';
